@@ -2,29 +2,34 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>My Phaser Card Game</title>
+    <title>My Card Game</title>
 
     <style>
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            background: #004b23;
+            background: #0f6f2f;
+            font-family: Arial, sans-serif;
         }
+
+        header {
+            padding: 10px;
+            background: #073b15;
+            color: white;
+            text-align: center;
+        }
+
+        a { color: #dff7df; }
     </style>
 </head>
 
 <body>
     <header>
-      <h1>Wiley Games</h1>
-      <nav>
-        <a href="index.html">Home</a>
-      </nav>
+        <h1>Wiley Games</h1>
+        <nav><a href="index.html">Home</a></nav>
     </header>
-    <!-- Load Phaser from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
 
-    <!-- Load your game code -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
     <script src="js/deck.js"></script>
     <script src="js/game.js"></script>
 </body>
