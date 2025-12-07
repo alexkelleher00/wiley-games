@@ -43,7 +43,7 @@ let selectedCards = [];
 let pile = [];
 let expectedRankIndex = 0; // 0 = Ace, 1 = 2, ..., 12 = King
 const suits = ["Hearts","Diamonds","Clubs","Spades"];
-const values = ["Ace","2","3","4","5","6","7","8","9","10","Jack","Queen","King"];
+const values = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"];
 let handContainerY = [450, 50]; // bottom/top player hands
 let handScrollOffset = [0,0];
 
@@ -51,7 +51,7 @@ function preload() {
     // load card images
     suits.forEach(suit => {
         values.forEach(value => {
-            this.load.image(`${value}_${suit}`, `assets/cards/${value}_${suit}.png`);
+            this.load.image(`${value}_${suit}`, `assets/cards/${value}_of_${suit}.png`);
         });
     });
     this.load.image('back', 'assets/cards/back.png');
