@@ -1,250 +1,151 @@
-var config = {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phaser Card Game</title>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+<style>
+    body { margin: 0; padding: 0; }
+    #game-container { margin: 0 auto; }
+    button { position: absolute; top: 10px; left: 10px; z-index: 1000; }
+</style>
+</head>
+<body>
+<button id="doneTurn">Done Turn</button>
+<div id="game-container"></div>
+<script>
+const config = {
     type: Phaser.AUTO,
-    width: 1000,
-    height: 700,
-    backgroundColor: '#2e8b57',
-    scale: { autoCenter: Phaser.Scale.CENTER_BOTH },
-    scene: { preload, create }
+    width: 800,
+    height: 600,
+    backgroundColor: 0x228B22,
+    parent: 'game-container',
+    scene: { preload, create, update }
 };
 
-var game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
 
-var deck;
-var players = [];
-var currentPlayer = 0;
+let playerHands = [[], []];
+let currentPlayer = 0;
+let cardGroup;
+let selectedCards = [];
 
-var turnNumber = 1;
-var turnText;
-var playZone;
-var pile = [];          // stores cards played each turn
-var pileImages = [];    // images displayed in center
-var inputBox;
-var callBSButton;
+const suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
+const values = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"];
 
 function preload() {
-    this.load.image("cardBack", "assets/cards/back.png");
-    for (let suit of ["clubs", "diamonds", "hearts", "spades"]) {
-        for (let rank of ["A","2","3","4","5","6","7","8","9","10","J","Q","K"]) {
-            this.load.image(`${rank}_of_${suit}`, `assets/cards/${rank}_of_${suit}.png`);
-        }
-    }
+    // We'll generate card graphics dynamically
 }
 
 function create() {
-    deck = new Deck();
+    cardGroup = this.add.group();
 
-    players = [
-        { name: "Player 1", hand: [], isHuman: true },
-        { name: "Player 2", hand: [], isHuman: false }
+    // Create player name texts
+    this.playerTexts = [
+        this.add.text(100, 520, 'Player 1', { font: '24px Arial', fill: '#ffffff' }),
+        this.add.text(100, 50, 'Player 2', { font: '24px Arial', fill: '#ffffff' })
     ];
 
-    // Deal 4 cards each
-    for (let p of players) {
-        for (let i = 0; i < 4; i++) p.hand.push(deck.draw());
-    }
-
-    // Turn label
-    turnText = this.add.text(330, 20, "", {
-        font: "32px Arial",
-        fill: "#ffffff"
-    });
-
-    updateTurnText();
-
-    // Center pile zone
-    playZone = this.add.rectangle(500, 350, 280, 200, 0x000000, 0.25)
-        .setStrokeStyle(3, 0xffffff);
-    this.add.text(445, 260, "PILE", {
-        font: "24px Arial",
-        fill: "#ffffff"
-    });
-
-    // Buttons
-    createCallBSButton.call(this);
-
-    renderHands.call(this);
-
-    // drag events
-    this.input.on('dragstart', (pointer, gameObject) => gameObject.setScale(0.6));
-
-    this.input.on('drag', (pointer, gameObject, x, y) => {
-        gameObject.x = x; gameObject.y = y;
-    });
-
-    // Drop card onto pile
-    this.input.on('dragend', (pointer, card) => {
-        card.setScale(0.5);
-
-        if (Phaser.Geom.Rectangle.Contains(playZone.getBounds(), card.x, card.y)) {
-            playCard(card);
-        } else {
-            renderHands.call(this); // restore original positions
-        }
-    });
-
-    // Create claim textbox
-    createTextInput();
-}
-
-function renderHands() {
-    if (this.cardImages) this.cardImages.forEach(img => img.destroy());
-    this.cardImages = [];
-
-    let positions = [550, 150];
-
-    for (let i = 0; i < players.length; i++) {
-        let player = players[i];
-        let y = positions[i];
-        let x = 100;
-
-        this.add.text(20, y - 40, player.name, {
-            font: "28px Arial",
-            fill: "#ffffff"
+    // Create a deck
+    let deck = [];
+    suits.forEach(suit => {
+        values.forEach(value => {
+            deck.push({ suit, value });
         });
-
-        for (let card of player.hand) {
-            let img = this.add.image(x, y,
-                `${card.rank}_of_${card.suit}`)
-                .setScale(0.5)
-                .setInteractive({ draggable: true });
-            img.cardData = card;
-
-            this.input.setDraggable(img);
-            this.cardImages.push(img);
-
-            x += 130;
-        }
-    }
-}
-
-function updateTurnText() {
-    const ranks = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-    turnText.setText(`Turn: Play ${ranks[turnNumber - 1]}'s`);
-}
-
-// ------------------------
-// PLAYING A CARD
-// ------------------------
-function playCard(cardImage) {
-    let player = players[currentPlayer];
-
-    // Remove card from hand
-    let idx = player.hand.indexOf(cardImage.cardData);
-    if (idx >= 0) player.hand.splice(idx, 1);
-
-    // Add to pile (always hidden from human)
-    pile.push(cardImage.cardData);
-
-    // Refresh visuals
-    renderHands.call(this);
-    renderPile.call(this);
-
-    // Move to next turn
-    nextTurn();
-}
-
-// ------------------------
-// DRAW PILE
-// ------------------------
-function renderPile() {
-    pileImages.forEach(img => img.destroy());
-    pileImages = [];
-
-    let x = 480;
-    let y = 330;
-
-    for (let i = 0; i < pile.length; i++) {
-        let img = this.scene.add.image(x + i * 4, y + i * 4, "cardBack")
-            .setScale(0.45);
-        pileImages.push(img);
-    }
-}
-
-// ------------------------
-// TURN SYSTEM
-// ------------------------
-function nextTurn() {
-    currentPlayer = (currentPlayer + 1) % players.length;
-
-    turnNumber++;
-    if (turnNumber > 13) turnNumber = 1;
-
-    updateTurnText();
-}
-
-// ------------------------
-// CALL BS SYSTEM
-// ------------------------
-function createCallBSButton() {
-    callBSButton = this.add.text(830, 20, "Call BS", {
-        font: "28px Arial",
-        fill: "#ffffff",
-        backgroundColor: "#8b0000"
-    })
-    .setPadding(10)
-    .setInteractive()
-    .on("pointerdown", () => callBS.call(this));
-}
-
-function callBS() {
-    if (pile.length === 0) {
-        alert("Pile is empty — can't call BS.");
-        return;
-    }
-
-    // Reveal pile
-    pileImages.forEach(img => img.destroy());
-    pileImages = [];
-
-    let x = 480;
-    let y = 330;
-
-    for (let i = 0; i < pile.length; i++) {
-        let card = pile[i];
-        let img = this.add.image(x + i * 4, y + i * 4,
-            `${card.rank}_of_${card.suit}`).setScale(0.5);
-        pileImages.push(img);
-    }
-
-    // Check if bluffing (TRUE if any card does not match required rank)
-    const requiredRank = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"][turnNumber - 1];
-    const wasLying = pile.some(card => card.rank !== requiredRank);
-
-    let loser = wasLying ? players[currentPlayer] :
-                           players[(currentPlayer + 1) % players.length];
-
-    alert(`${loser.name} loses the BS call and takes the pile!`);
-
-    // Give pile to loser
-    loser.hand.push(...pile);
-
-    // Clear pile
-    pile = [];
-    pileImages.forEach(img => img.destroy());
-    pileImages = [];
-
-    // Re-render
-    renderHands.call(this);
-}
-
-// ------------------------
-// TEXT INPUT BOX
-// ------------------------
-function createTextInput() {
-    inputBox = document.createElement("input");
-    inputBox.type = "text";
-    inputBox.placeholder = "Enter your claim (optional)";
-
-    Object.assign(inputBox.style, {
-        position: "absolute",
-        top: "80px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        padding: "10px",
-        fontSize: "18px",
-        width: "400px",
-        zIndex: 10
     });
 
-    document.body.appendChild(inputBox);
+    Phaser.Utils.Array.Shuffle(deck);
+
+    // Deal 5 cards each
+    for (let i = 0; i < 5; i++) {
+        playerHands[0].push(deck.pop());
+        playerHands[1].push(deck.pop());
+    }
+
+    drawHands(this);
+
+    // Make cards draggable
+    this.input.on('dragstart', (pointer, gameObject) => {
+        gameObject.setTint(0x999999);
+        if (!selectedCards.includes(gameObject)) selectedCards.push(gameObject);
+    });
+
+    this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+        gameObject.x = dragX;
+        gameObject.y = dragY;
+    });
+
+    this.input.on('dragend', (pointer, gameObject) => {
+        gameObject.clearTint();
+    });
+
+    document.getElementById('doneTurn').addEventListener('click', () => {
+        finishTurn();
+    });
 }
+
+function drawHands(scene) {
+    // Clear previous cards
+    cardGroup.clear(true, true);
+
+    const spacing = 60;
+    const yPositions = [500, 100];
+
+    playerHands.forEach((hand, playerIndex) => {
+        let x = 50;
+        hand.forEach(card => {
+            let cardContainer = scene.add.container(x, yPositions[playerIndex]);
+
+            // Card backing
+            let rect = scene.add.rectangle(0, 0, 60, 90, 0xffffff);
+            rect.setStrokeStyle(2, 0x000000);
+
+            // Card text
+            let cardText = scene.add.text(-25, -20, `${card.value}\n${card.suit}`, { font: '14px Arial', fill: '#000000' });
+
+            cardContainer.add([rect, cardText]);
+            cardContainer.setSize(60, 90);
+            cardContainer.setInteractive();
+            scene.input.setDraggable(cardContainer);
+
+            cardContainer.playerIndex = playerIndex; // track owner
+            cardGroup.add(cardContainer);
+
+            x += spacing;
+        });
+    });
+}
+
+function finishTurn() {
+    // Check if current player is playing
+    if (selectedCards.length === 0) return;
+
+    // Validate selected cards belong to current player
+    for (let c of selectedCards) {
+        if (c.playerIndex !== currentPlayer) {
+            alert("You can only play your own cards!");
+            selectedCards = [];
+            drawHands(game.scene.scenes[0]);
+            return;
+        }
+    }
+
+    // Remove selected cards from hand
+    selectedCards.forEach(c => {
+        playerHands[currentPlayer] = playerHands[currentPlayer].filter(card => {
+            return !(card.value + card.suit === c.list[1].text.replace('\n',''));
+        });
+    });
+
+    console.log(`Player ${currentPlayer + 1} played:`, selectedCards.map(c => c.list[1].text));
+
+    selectedCards = [];
+    currentPlayer = (currentPlayer + 1) % 2;
+    drawHands(game.scene.scenes[0]);
+}
+
+function update() {}
+
+</script>
+</body>
+</html>
