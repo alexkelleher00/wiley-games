@@ -4,10 +4,7 @@ var config = {
     height: 700,
     backgroundColor: '#2e8b57',
 
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
+    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
 
     scene: {
         preload: preload,
@@ -15,128 +12,150 @@ var config = {
     }
 };
 
-
 var game = new Phaser.Game(config);
 
 var deck;
 var players = [];
 var currentPlayer = 0;
+
+var turnNumber = 1; // 1 → 13
 var turnText;
-var startButton, nextButton, endButton;
-var cardBack;
+var playZone;
+var inputBox;
 
 function preload() {
-    // card back (you can change this)
     this.load.image("cardBack", "assets/cards/back.png");
 
-    // Load actual cards
     for (let suit of ["clubs", "diamonds", "hearts", "spades"]) {
-        for (let rank of ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"]) {
+        for (let rank of ["A","2","3","4","5","6","7","8","9","10","J","Q","K"]) {
             this.load.image(`${rank}_of_${suit}`, `assets/cards/${rank}_of_${suit}.png`);
         }
     }
 }
 
 function create() {
-    // UI Buttons
-    startButton = this.add.text(420, 300, "START GAME", {
-        font: "40px Arial",
-        fill: "#ffffff",
-        backgroundColor: "#000"
-    })
-    .setPadding(10)
-    .setInteractive()
-    .on("pointerdown", () => startGame.call(this));
-
-    endButton = this.add.text(830, 20, "End Game", {
-        font: "24px Arial",
-        fill: "#ffffff",
-        backgroundColor: "#8b0000"
-    })
-    .setPadding(8)
-    .setInteractive()
-    .on("pointerdown", () => location.reload());
-}
-
-function startGame() {
     deck = new Deck();
 
+    // Create players
     players = [
         { name: "Player 1", hand: [] },
         { name: "Player 2", hand: [] }
     ];
 
-    // Deal 4 cards to each
+    // Deal 4 cards each
     for (let p of players) {
-        for (let i = 0; i < 4; i++) p.hand.push(deck.draw());
+        for (let i = 0; i < 4; i++)
+            p.hand.push(deck.draw());
     }
 
-    startButton.destroy(); // remove start button
-
-    turnText = this.add.text(20, 20, "", {
+    // Turn text (shows which number is being played)
+    turnText = this.add.text(350, 20, "Turn: Play all **1s** (Aces)", {
         font: "32px Arial",
         fill: "#ffffff"
     });
 
-    nextButton = this.add.text(420, 620, "Next Turn", {
-        font: "32px Arial",
-        fill: "#ffffff",
-        backgroundColor: "#e0d5d5ff"
-    })
-    .setPadding(10)
-    .setInteractive()
-    .on("pointerdown", () => handleTurn.call(this));
+    // Central play zone
+    playZone = this.add.rectangle(500, 350, 300, 200, 0x000000, 0.3)
+        .setStrokeStyle(3, 0xffffff);
 
+    this.add.text(430, 260, "PLAY HERE", {
+        font: "24px Arial",
+        fill: "#ffffff"
+    });
+
+    // Render hands
     renderHands.call(this);
-    updateTurnText();
-}
 
-function updateTurnText() {
-    turnText.setText("Turn: " + players[currentPlayer].name);
+    // Drag mechanics
+    this.input.on('dragstart', function (pointer, gameObject) {
+        gameObject.setScale(0.6);
+    });
+
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+        gameObject.x = dragX;
+        gameObject.y = dragY;
+    });
+
+    this.input.on('dragend', (pointer, card) => {
+        card.setScale(0.5);
+
+        // Check if card dropped in play zone
+        if (Phaser.Geom.Rectangle.Contains(playZone.getBounds(), card.x, card.y)) {
+            // Remove card from hand
+            let hand = players[currentPlayer].hand;
+            let index = hand.indexOf(card.cardData);
+            if (index !== -1) hand.splice(index, 1);
+
+            card.setVisible(false);
+
+            // Move to next turn
+            nextTurn.call(this);
+            renderHands.call(this);
+        }
+    });
+
+    // Create Textbox (HTML overlay)
+    createTextInput();
 }
 
 function renderHands() {
     if (this.cardImages) this.cardImages.forEach(img => img.destroy());
     this.cardImages = [];
 
-    let yPositions = [200, 470];
+    let yPositions = [550, 150];
 
     for (let i = 0; i < players.length; i++) {
         let player = players[i];
         let y = yPositions[i];
-        let x = 80;
+        let x = 100;
 
-        // Player label
-        this.add.text(80, y - 50, player.name, {
+        this.add.text(20, y - 40, player.name, {
             font: "28px Arial",
             fill: "#ffffff"
         });
 
-        // Cards spaced clearly
         for (let card of player.hand) {
             let img = this.add.image(x, y, `${card.rank}_of_${card.suit}`)
                 .setScale(0.5)
-                .setInteractive();
+                .setInteractive({ draggable: true });
+
+            img.cardData = card; // attach card reference
+
+            this.input.setDraggable(img);
+
             this.cardImages.push(img);
             x += 130;
         }
     }
 }
 
-function handleTurn() {
-    let p = players[currentPlayer];
-
-    if (p.hand.length === 0) {
-        alert(p.name + " has no cards! They win!");
-        return;
-    }
-
-    // Example logic: play last card
-    let playedCard = p.hand.pop();
-    console.log(p.name + " played", playedCard.rank, playedCard.suit);
-
-    renderHands.call(this);
-
+function nextTurn() {
     currentPlayer = (currentPlayer + 1) % players.length;
-    updateTurnText();
+
+    turnNumber++;
+    if (turnNumber > 13) turnNumber = 1;
+
+    const ranks = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+    turnText.setText(`Turn: Play all **${turnNumber} (${ranks[turnNumber - 1]})**`);
+}
+
+
+// HTML input box overlaid onto canvas
+function createTextInput() {
+    inputBox = document.createElement("input");
+    inputBox.type = "text";
+    inputBox.placeholder = "Claim your amount (ex: 'I played 2 cards')";
+
+    Object.assign(inputBox.style, {
+        position: "absolute",
+        top: "80px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        padding: "10px",
+        fontSize: "18px",
+        width: "400px",
+        zIndex: 10
+    });
+
+    document.body.appendChild(inputBox);
 }
