@@ -3,7 +3,7 @@ var config = {
     width: 1000,
     height: 700,
     backgroundColor: '#2e8b57',
-    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+    scale: { autoCenter: Phaser.Scale.CENTER_BOTH },
     scene: { preload, create }
 };
 
@@ -207,7 +207,7 @@ function callBS() {
     }
 
     // Check if bluffing (TRUE if any card does not match required rank)
-    const requiredRank = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"][turnNumber - 1];
+    const requiredRank = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"][turnNumber - 1];
     const wasLying = pile.some(card => card.rank !== requiredRank);
 
     let loser = wasLying ? players[currentPlayer] :
