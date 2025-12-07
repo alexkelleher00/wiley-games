@@ -3,11 +3,18 @@ var config = {
     width: 1000,
     height: 700,
     backgroundColor: '#2e8b57',
+
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+
     scene: {
         preload: preload,
         create: create
     }
 };
+
 
 var game = new Phaser.Game(config);
 
@@ -24,7 +31,7 @@ function preload() {
 
     // Load actual cards
     for (let suit of ["clubs", "diamonds", "hearts", "spades"]) {
-        for (let rank of ["A","2","3","4","5","6","7","8","9","10","J","Q","K"]) {
+        for (let rank of ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"]) {
             this.load.image(`${rank}_of_${suit}`, `assets/cards/${rank}_of_${suit}.png`);
         }
     }
@@ -74,7 +81,7 @@ function startGame() {
     nextButton = this.add.text(420, 620, "Next Turn", {
         font: "32px Arial",
         fill: "#ffffff",
-        backgroundColor: "#000000"
+        backgroundColor: "#e0d5d5ff"
     })
     .setPadding(10)
     .setInteractive()
