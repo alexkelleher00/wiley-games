@@ -98,7 +98,7 @@ let cards = [];
 function preload() {
     for (let suit of suits) {
         for (let value of values) {
-            const key = `${value}_${suit}`;
+            const key = `${value}_of_${suit}`;
             this.load.image(key, `assets/cards/${key}.png`);
         }
     }
