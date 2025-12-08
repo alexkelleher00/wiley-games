@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio - Kelleher Innovations</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+<style>
+  /* Two-column layout for cards + text */
+  .psg-section.active {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+
+  .left {
+    flex: 1;
+    min-width: 300px;
+    overflow-y: auto;
+  }
+
+  .right {
+    flex: 2;
+    min-width: 600px;
+    height: 80vh;
+  }
+
+  #game-container {
+    width: 100%;
+    height: 100%;
+  }
+</style>
 </head>
 <body>
 <header>
@@ -14,28 +41,101 @@
     <a href="index.html">Home</a>
   </nav>
 </header>
+
 <main>
-  <section class="center">
-    <h2>Hi Lo Rio</h2>
-    <ul>
-      <details>
-          <summary> Intro</summary>
-          <p> Hello</p>
-      </details>
-      <details>
-          <summary> Rules</summary>
-          <p> Hello</p>
-      </details>
-      <details>
-          <summary> Objective</summary>
-          <p> Hello</p>
-      </details>
-    </ul>
-    <p>More projects coming soon!</p>
+  <section class="psg-section active">
+    <div class="left">
+      <h2>Hi Lo Rio</h2>
+      <ul>
+        <details>
+            <summary>Intro</summary>
+            <p>Hello</p>
+        </details>
+        <details>
+            <summary>Rules</summary>
+            <p>Hello</p>
+        </details>
+        <details>
+            <summary>Objective</summary>
+            <p>Hello</p>
+        </details>
+      </ul>
+      <p>More projects coming soon!</p>
+    </div>
+
+    <div class="right" id="game-container"></div>
   </section>
 </main>
+
 <footer>
   <p>&copy; 2025 Wiley Gamess</p>
 </footer>
+
+<script>
+const config = {
+    type: Phaser.AUTO,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 0x228B22,
+    parent: 'game-container',
+    scene: { preload, create }
+};
+
+const game = new Phaser.Game(config);
+
+const rows = 5;
+const cols = 13;
+const cardWidth = 60;
+const cardHeight = 90;
+const spacingX = 80;
+const spacingY = 120;
+
+const suits = ["hearts","diamonds","clubs","spades","joker"];
+const values = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"];
+
+let cards = [];
+
+function preload() {
+    for (let suit of suits) {
+        for (let value of values) {
+            const key = `${value}_${suit}`;
+            this.load.image(key, `assets/cards/${key}.png`);
+        }
+    }
+    this.load.image('back', 'assets/cards/back.png');
+}
+
+function create() {
+    let startX = 60;
+    let startY = 60;
+
+    let index = 0;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (index >= suits.length * values.length) break;
+
+            let suit = suits[Math.floor(index / values.length)];
+            let value = values[index % values.length];
+            let frontKey = `${value}_${suit}`;
+
+            let card = this.add.image(startX + c * spacingX, startY + r * spacingY, frontKey)
+                .setDisplaySize(cardWidth, cardHeight)
+                .setInteractive();
+
+            card.frontKey = frontKey;
+            card.isFaceUp = true;
+
+            card.on('pointerdown', function() {
+                if (this.isFaceUp) this.setTexture('back');
+                else this.setTexture(this.frontKey);
+                this.isFaceUp = !this.isFaceUp;
+            });
+
+            cards.push(card);
+            index++;
+        }
+    }
+}
+</script>
 </body>
 </html>
