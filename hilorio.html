@@ -3,37 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio - Kelleher Innovations</title>
+<title>Hi Lo Rio | Roulette Games</title>
+
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+
 <style>
-  /* Two-column layout for cards + text */
-  .psg-section.active {
-    display: flex;
-    justify-content: space-between;
-    gap: 25px;
-    margin: 30px auto;
-    padding: 20px;
-  }
+/* ===== GAME PAGE LAYOUT ===== */
+.game-hero {
+  max-width: 1200px;
+  margin: 40px auto;
+  text-align: center;
+}
 
-  .left {
-    flex: 1;
-    min-width: 300px;
-    overflow-y: auto;
-  }
+.game-hero h2 {
+  font-size: 2.8em;
+  color: #00ffff;
+  margin-bottom: 10px;
+}
 
-  .right {
-    flex: 2;
-    min-width: 600px;
-    height: 80vh;
-  }
+.game-hero p {
+  color: #cccccc;
+  font-size: 1.2em;
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+}
 
-  #game-container {
-    width: 100%;
-    height: 100%;
-  }
+/* ===== GAME CANVAS ===== */
+#game-container {
+  width: 100%;
+  height: 600px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 30px #00ffff44;
+  background: #0b3d1b;
+}
+
+/* ===== TEXT SECTIONS ===== */
+.game-info {
+  max-width: 1000px;
+  margin: 60px auto;
+  display: grid;
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.info-block {
+  background: #1f1f1f;
+  border-radius: 14px;
+  padding: 30px;
+  border: 1px solid #00ffff44;
+}
+
+.info-block h3 {
+  color: #00ffff;
+  margin-bottom: 12px;
+  font-size: 1.8em;
+}
+
+.info-block p {
+  color: #cccccc;
+  line-height: 1.6;
+  font-size: 1.05em;
+}
 </style>
 </head>
+
 <body>
 <header>
   <h1>Roulette Games</h1>
@@ -43,105 +78,164 @@
 </header>
 
 <main>
-  <section class="psg-section active">
-    <div class="left">
-      <h2>Hi Lo Rio</h2>
-      <ul>
-        <details>
-            <summary>Intro</summary>
-            <p>Hello</p>
-        </details>
-        <details>
-            <summary>Rules</summary>
-            <p>Hello</p>
-        </details>
-        <details>
-            <summary>Objective</summary>
-            <p>Hello</p>
-        </details>
-      </ul>
-      <p>More projects coming soon!</p>
+
+  <!-- ===== HERO ===== -->
+  <section class="game-hero">
+    <h2>Hi Lo Rio</h2>
+    <p>
+      A fast-paced card game of prediction, deception, and risk.
+      Learn the flow, understand the odds, and master the deck.
+    </p>
+
+    <div id="game-container"></div>
+  </section>
+
+  <!-- ===== GAME INFO ===== -->
+  <section class="game-info">
+
+    <div class="info-block">
+      <h3>Introduction</h3>
+      <p>
+        Hi Lo Rio is a strategic card-based experience built around probability,
+        memory, and player intuition. Each card flip reveals new possibilities —
+        and new risks.
+      </p>
     </div>
 
-    <div class="right" id="game-container"></div>
+    <div class="info-block">
+      <h3>How to Play</h3>
+      <p>
+        Insert Text Here
+      </p>
+    </div>
+
+    <div class="info-block">
+      <h3>Rules</h3>
+      <p>
+        Insert Text Here
+      </p>
+    </div>
+
+    <div class="info-block">
+      <h3>Objective</h3>
+      <p>
+        Insert Text Here
+      </p>
+    </div>
+
   </section>
+
 </main>
 
 <footer>
   <p>&copy; 2025 Roulette Games</p>
 </footer>
 
+<!-- ===== PHASER GAME ===== -->
 <script>
-window.onload = () => {
-    const right = document.querySelector('.right');
-
-    const config = {
-        type: Phaser.AUTO,
-        width: 1000,
-        height: 600,
-        backgroundColor: 0x228B22,
-        parent: 'game-container',
-        scene: { preload, create }
-    };
-
-    new Phaser.Game(config);
-
+const config = {
+  type: Phaser.AUTO,
+  width: 1100,
+  height: 600,
+  parent: 'game-container',
+  backgroundColor: 0x1b5e20,
+  scene: { preload, create }
 };
 
-// ----- Card Game Setup -----
+new Phaser.Game(config);
+
 const rows = 5;
 const cols = 13;
-const cardWidth = 60;
-const cardHeight = 90;
-const spacingX = 70;
-const spacingY = 110;
+const cardWidth = 65;
+const cardHeight = 95;
+const spacingX = 80;
+const spacingY = 120;
 
 const suits = ["hearts","diamonds","clubs","spades"];
 const values = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"];
 
-let cards = [];
-
 function preload() {
-    for (let suit of suits) {
-        for (let value of values) {
-            const key = `${value}_of_${suit}`;
-            this.load.image(key, `assets/cards/${key}.png`);
-        }
+  for (let suit of suits) {
+    for (let value of values) {
+      this.load.image(
+        `${value}_of_${suit}`,
+        `assets/cards/${value}_of_${suit}.png`
+      );
     }
-    this.load.image('back', 'assets/cards/back.png');
+  }
+  this.load.image('back', 'assets/cards/back.png');
 }
 
 function create() {
-    let startX = 50;
-    let startY = 50;
-    let index = 0;
+  let x0 = 60;
+  let y0 = 60;
+  let i = 0;
 
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (i >= suits.length * values.length) return;
 
-            if (index >= suits.length * values.length) return;
+      const suit = suits[Math.floor(i / values.length)];
+      const value = values[i % values.length];
+      const key = `${value}_of_${suit}`;
 
-            let suit = suits[Math.floor(index / values.length)];
-            let value = values[index % values.length];
-            let frontKey = `${value}_of_${suit}`;
+      const card = this.add.image(
+        x0 + c * spacingX,
+        y0 + r * spacingY,
+        key
+      )
+      .setDisplaySize(cardWidth, cardHeight)
+      .setInteractive({ useHandCursor: true });
 
-            let card = this.add.image(startX + c * spacingX, startY + r * spacingY, frontKey)
-                .setDisplaySize(cardWidth, cardHeight)
-                .setInteractive();
+      card.front = key;
+      card.faceUp = true;
+      card.baseScale = card.scale;
 
-            card.frontKey = frontKey;
-            card.isFaceUp = true;
+      // 🔍 HOVER ZOOM
+      card.on('pointerover', () => {
+        this.tweens.add({
+          targets: card,
+          scale: card.baseScale * 1.25,
+          duration: 150,
+          ease: 'Power2'
+        });
+      });
 
-            card.on('pointerdown', function() {
-                this.isFaceUp = !this.isFaceUp;
-                this.setTexture(this.isFaceUp ? this.frontKey : 'back');
+      card.on('pointerout', () => {
+        this.tweens.add({
+          targets: card,
+          scale: card.baseScale,
+          duration: 150,
+          ease: 'Power2'
+        });
+      });
+
+      // 🔄 SMOOTH FLIP
+      card.on('pointerdown', () => {
+        this.tweens.add({
+          targets: card,
+          scaleX: 0,
+          duration: 150,
+          ease: 'Linear',
+          onComplete: () => {
+            card.faceUp = !card.faceUp;
+            card.setTexture(card.faceUp ? card.front : 'back');
+
+            this.tweens.add({
+              targets: card,
+              scaleX: card.baseScale,
+              duration: 150,
+              ease: 'Linear'
             });
+          }
+        });
+      });
 
-            cards.push(card);
-            index++;
-        }
+      i++;
     }
+  }
 }
 </script>
+
 </body>
 </html>
