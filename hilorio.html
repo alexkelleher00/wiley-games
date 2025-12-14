@@ -136,10 +136,14 @@
 <script>
 const config = {
   type: Phaser.AUTO,
-  width: 1100,
-  height: 600,
   parent: 'game-container',
   backgroundColor: 0x1b5e20,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1100,
+    height: 700
+  },
   scene: { preload, create }
 };
 
@@ -168,8 +172,13 @@ function preload() {
 }
 
 function create() {
-  let x0 = 60;
-  let y0 = 60;
+
+  const gridWidth  = (cols - 1) * spacingX + cardWidth;
+  const gridHeight = (rows - 1) * spacingY + cardHeight;
+
+  const x0 = (this.scale.width  - gridWidth)  / 2;
+  const y0 = (this.scale.height - gridHeight) / 2;
+
   let i = 0;
 
   for (let r = 0; r < rows; r++) {
@@ -192,26 +201,28 @@ function create() {
       card.faceUp = true;
       card.baseScale = card.scale;
 
-      // 🔍 HOVER ZOOM
-      card.on('pointerover', () => {
-        this.tweens.add({
-          targets: card,
-          scale: card.baseScale * 1.25,
-          duration: 150,
-          ease: 'Power2'
+      // Hover zoom (desktop only)
+      if (!this.sys.game.device.input.touch) {
+        card.on('pointerover', () => {
+          this.tweens.add({
+            targets: card,
+            scale: card.baseScale * 1.25,
+            duration: 150,
+            ease: 'Power2'
+          });
         });
-      });
 
-      card.on('pointerout', () => {
-        this.tweens.add({
-          targets: card,
-          scale: card.baseScale,
-          duration: 150,
-          ease: 'Power2'
+        card.on('pointerout', () => {
+          this.tweens.add({
+            targets: card,
+            scale: card.baseScale,
+            duration: 150,
+            ease: 'Power2'
+          });
         });
-      });
+      }
 
-      // 🔄 SMOOTH FLIP
+      // Flip animation
       card.on('pointerdown', () => {
         this.tweens.add({
           targets: card,
@@ -236,6 +247,7 @@ function create() {
     }
   }
 }
+
 </script>
 
 </body>
