@@ -1,138 +1,63 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hi Lo Rio | Roulette Games</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
-
-<style>
-/* ===== GAME PAGE LAYOUT ===== */
-.game-hero {
-  max-width: 1200px;
-  margin: 40px auto;
-  text-align: center;
-}
-
-.game-hero h2 {
-  font-size: 2.8em;
-  color: #00ffff;
-  margin-bottom: 10px;
-}
-
-.game-hero p {
-  color: #cccccc;
-  font-size: 1.2em;
-  max-width: 800px;
-  margin: 0 auto 30px auto;
-}
-
-/* ===== GAME CANVAS ===== */
-#game-container {
-  width: 100%;
-  height: 600px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 0 30px #00ffff44;
-  background: #0b3d1b;
-}
-
-/* ===== TEXT SECTIONS ===== */
-.game-info {
-  max-width: 1000px;
-  margin: 60px auto;
-  display: grid;
-  gap: 40px;
-  padding: 0 20px;
-}
-
-.info-block {
-  background: #1f1f1f;
-  border-radius: 14px;
-  padding: 30px;
-  border: 1px solid #00ffff44;
-}
-
-.info-block h3 {
-  color: #00ffff;
-  margin-bottom: 12px;
-  font-size: 1.8em;
-}
-
-.info-block p {
-  color: #cccccc;
-  line-height: 1.6;
-  font-size: 1.05em;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>RuleIt Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<header>
-  <h1>Roulette Games</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="game.html">Games</a>
-  </nav>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <h1>RuleIt Games</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#">Store</a>
+      <a href="#">Games</a>
+      <a href="#">News</a>
+      <a href="#">Support</a>
+    </nav>
+  </div>
 </header>
 
-<main>
+<div id="game-container"></div>
 
-  <!-- ===== HERO ===== -->
-  <section class="game-hero">
-    <h2>Hi Lo Rio</h2>
-    <p>
-      A fast-paced card game of prediction, deception, and risk.
-      Learn the flow, understand the odds, and master the deck.
-    </p>
 
-    <div id="game-container"></div>
-  </section>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-col">
+    <h4>Store</h4>
+    <a href="#">Browse</a>
+    <a href="#">New Releases</a>
+    <a href="#">Top Games</a>
+  </div>
 
-  <!-- ===== GAME INFO ===== -->
-  <section class="game-info">
+  <div class="footer-col">
+    <h4>Company</h4>
+    <a href="aboutus.html">About</a>
+    <a href="#">Careers</a>
+    <a href="#">Press</a>
+  </div>
 
-    <div class="info-block">
-      <h3>Introduction</h3>
-      <p>
-        Hi Lo Rio is a strategic card-based experience built around probability,
-        memory, and player intuition. Each card flip reveals new possibilities —
-        and new risks.
-      </p>
-    </div>
+  <div class="footer-col">
+    <h4>Support</h4>
+    <a href="#">Help Center</a>
+    <a href="#">Contact</a>
+    <a href="#">Community</a>
+  </div>
 
-    <div class="info-block">
-      <h3>How to Play</h3>
-      <p>
-        Insert Text Here
-      </p>
-    </div>
-
-    <div class="info-block">
-      <h3>Rules</h3>
-      <p>
-        Insert Text Here
-      </p>
-    </div>
-
-    <div class="info-block">
-      <h3>Objective</h3>
-      <p>
-        Insert Text Here
-      </p>
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-  <h2>Contact Us</h2>
-  <h3>Email: example@gmail.com | Phone: 123-456-7890</h3>
-  <p>&copy; 2025 Roulette Games</p>
+  <div class="footer-col">
+    <h4>Legal</h4>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+  </div>
 </footer>
+
+</body>
+</html>
+
 
 <!-- ===== PHASER GAME ===== -->
 <script>
