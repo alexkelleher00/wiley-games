@@ -113,14 +113,18 @@ img {
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  max-width: 320px;   /* stops mobile blow-up */
+  max-width: 260px;   /* stops mobile blow-up */
   width: 100%;
 }
 
 .game-card img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  width: clamp(64px, 18vw, 110px);
+  max-width: 200px;             /* stops desktop blow-up */
+  aspect-ratio: 2.5 / 3.5;      /* card ratio */
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+  transition: transform 0.3s ease;
 }
 
 .game-card h3 {
@@ -165,8 +169,6 @@ img {
   color: #fff;
 }
 
-
-
 .fun-images {
   display: flex;
   justify-content: center;
@@ -193,7 +195,7 @@ img {
 .fun-images img:nth-child(1) { transform: rotate(-6deg); }
 .fun-images img:nth-child(2) { transform: rotate(4deg); }
 .fun-images img:nth-child(3) { transform: rotate(-2deg); }
-.fun-images img:nth-child(4) { transform: rotate(3deg); }
+.fun-images img:nth-child(4) { transform: rotate(9deg); }
 .fun-images img:nth-child(5) { transform: rotate(-4deg); }
 
 
