@@ -113,13 +113,13 @@ img {
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  max-width: 260px;   /* stops mobile blow-up */
+  max-width: 320px;   /* stops mobile blow-up */
   width: 100%;
 }
 
 .game-card img {
   width: clamp(64px, 18vw, 110px);
-  max-width: 200px;             /* stops desktop blow-up */
+  max-width: 260px;             /* stops desktop blow-up */
   aspect-ratio: 2.5 / 3.5;      /* card ratio */
   object-fit: cover;
   border-radius: 10px;
