@@ -103,6 +103,8 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  justify-items: center;
+  overflow: visible;
 }
 
 .game-card {
@@ -111,6 +113,8 @@ img {
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: 320px;   /* stops mobile blow-up */
+  width: 100%;
 }
 
 .game-card img {
@@ -167,33 +171,31 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  margin: 24px auto;
+  gap: clamp(8px, 3vw, 16px);
+  margin: 24px auto 32px;
+  padding: 0 12px;              /* prevents edge clipping */
   max-width: 100%;
+  overflow: visible;            /* allows rotation overflow */
+  flex-wrap: nowrap;
 }
 
 /* Base image style */
 .fun-images img {
-  width: clamp(70px, 20vw, 120px);
-  aspect-ratio: 1 / 1;
+  width: clamp(64px, 18vw, 110px);
+  max-width: 110px;             /* stops desktop blow-up */
+  aspect-ratio: 2.5 / 3.5;      /* card ratio */
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
   transition: transform 0.3s ease;
 }
 
-/* Playful rotations */
-.fun-images img:nth-child(1) {
-  transform: rotate(-6deg);
-}
+.fun-images img:nth-child(1) { transform: rotate(-6deg); }
+.fun-images img:nth-child(2) { transform: rotate(4deg); }
+.fun-images img:nth-child(3) { transform: rotate(-2deg); }
+.fun-images img:nth-child(4) { transform: rotate(3deg); }
+.fun-images img:nth-child(5) { transform: rotate(-4deg); }
 
-.fun-images img:nth-child(2) {
-  transform: rotate(3deg);
-}
-
-.fun-images img:nth-child(3) {
-  transform: rotate(-2deg);
-}
 
 /* Hover effect (desktop only) */
 @media (hover: hover) {
