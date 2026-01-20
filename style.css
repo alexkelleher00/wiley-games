@@ -11,9 +11,7 @@ body {
 }
 
 main {
-  max-width: 900px;        /* prevents full-width stretching */
-  margin: 0 auto;          /* centers content */
-  padding: 24px;           /* space from screen edges */
+  padding: clamp(16px, 4vw, 24px);
 }
 
 section {
@@ -41,6 +39,11 @@ p {
   margin-bottom: 16px;    /* space between paragraphs */
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
 /* HEADER */
 .header {
@@ -67,6 +70,20 @@ p {
   color: #fff;
 }
 
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header nav a {
+    margin-left: 0;
+    margin-right: 16px;
+  }
+}
+
+
 /* HERO */
 .hero {
   padding: 60px 20px;
@@ -75,8 +92,7 @@ p {
 }
 
 .hero h2 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
 }
 
 /* GAME GRID */
@@ -98,9 +114,8 @@ p {
 }
 
 .game-card img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -113,6 +128,13 @@ p {
   transform: scale(1.03);
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
+
+@media (max-width: 480px) {
+  .games {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* FOOTER */
 .footer {
