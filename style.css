@@ -160,3 +160,45 @@ img {
 .footer-col a:hover {
   color: #fff;
 }
+
+
+
+.fun-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 24px auto;
+  max-width: 100%;
+}
+
+/* Base image style */
+.fun-images img {
+  width: clamp(70px, 20vw, 120px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease;
+}
+
+/* Playful rotations */
+.fun-images img:nth-child(1) {
+  transform: rotate(-6deg);
+}
+
+.fun-images img:nth-child(2) {
+  transform: rotate(3deg);
+}
+
+.fun-images img:nth-child(3) {
+  transform: rotate(-2deg);
+}
+
+/* Hover effect (desktop only) */
+@media (hover: hover) {
+  .fun-images img:hover {
+    transform: scale(1.05) rotate(0deg);
+    z-index: 2;
+  }
+}
