@@ -10,6 +10,38 @@ body {
   color: #fff;
 }
 
+main {
+  max-width: 900px;        /* prevents full-width stretching */
+  margin: 0 auto;          /* centers content */
+  padding: 24px;           /* space from screen edges */
+}
+
+section {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+h2 {
+  margin-bottom: 16px;
+}
+
+h3 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+h4 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+p {
+  line-height: 1.6;        /* readable paragraphs */
+  margin-bottom: 16px;    /* space between paragraphs */
+}
+
+
 /* HEADER */
 .header {
   background: #111;
