@@ -118,13 +118,10 @@ img {
 }
 
 .game-card img {
-  width: clamp(64px, 18vw, 110px);
-  max-width: 260px;             /* stops desktop blow-up */
-  aspect-ratio: 2.5 / 3.5;      /* card ratio */
+  width: 100%;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-  transition: transform 0.3s ease;
+  display: block;
 }
 
 .game-card h3 {
@@ -139,7 +136,12 @@ img {
 
 @media (max-width: 480px) {
   .games {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .game-card {
+    max-width: none;
   }
 }
 
