@@ -169,6 +169,13 @@ img {
   color: #fff;
 }
 
+.footer-socials a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
 .fun-images {
   display: flex;
   justify-content: center;
