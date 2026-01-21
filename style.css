@@ -58,16 +58,17 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .header nav a {
   margin-left: 20px;
-  color: #bbb;
+  color: rgb(46, 213, 4);
   text-decoration: none;
 }
 
 .header nav a:hover {
-  color: #fff;
+  color: rgb(46, 213, 4);
 }
 
 @media (max-width: 768px) {
@@ -119,7 +120,7 @@ img {
 
 .game-card img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 9 / 16;
   object-fit: cover;
   display: block;
 }
